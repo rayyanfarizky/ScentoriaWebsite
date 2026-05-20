@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCENTORIA — Luxury Fragrance Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<style> 
+  :root {
+    --gold: #C9A96E;
+    --gold-light: #E8D5A3;
+    --gold-dark: #8B6F3E;
+    --black: #0A0805;
+    --dark: #12100D;
+    --dark2: #1C1915;
+    --dark3: #252219;
+    --cream: #F5EDD8;
+    --cream-dim: #C8B98A;
+    --text-muted: #7A7060;
+    --border: rgba(201,169,110,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* CUSTOM SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 3rem;
+    background: linear-gradient(to bottom, rgba(10,8,5,0.95), transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .nav-logo span {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--cream-dim);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav-cart {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--cream-dim);
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-cart:hover { color: var(--gold); }
+  .cart-badge {
+    background: var(--gold);
+    color: var(--black);
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    display: grid;
+    place-items: center;
+    font-size: 0.65rem;
+    font-weight: 500;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 5rem;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(201,169,110,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 80%, rgba(139,111,62,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 40% at 20% 60%, rgba(201,169,110,0.04) 0%, transparent 50%);
+  }
+
+  /* Floating orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+    animation: floatOrb 12s ease-in-out infinite;
+  }
+
+  .orb-1 { width: 500px; height: 500px; background: var(--gold); top: -100px; right: -100px; animation-delay: 0s; }
+  .orb-2 { width: 300px; height: 300px; background: var(--gold-light); bottom: 100px; left: -50px; animation-delay: -4s; }
+  .orb-3 { width: 200px; height: 200px; background: var(--gold-dark); top: 50%; left: 40%; animation-delay: -8s; }
+
+  @keyframes floatOrb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -40px) scale(1.05); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+  }
+
+  /* Decorative lines */
+  .hero-line {
+    position: absolute;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    width: 1px;
+    opacity: 0.2;
+    animation: lineGlow 4s ease-in-out infinite alternate;
+  }
+
+  .hero-line-1 { height: 60%; top: 20%; left: 15%; animation-delay: 0s; }
+  .hero-line-2 { height: 40%; top: 30%; right: 20%; animation-delay: -2s; }
+
+  @keyframes lineGlow {
+    from { opacity: 0.1; }
+    to { opacity: 0.35; }
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    z-index: 2;
+    max-width: 900px;
+    padding: 0 2rem;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--cream-dim);
+    letter-spacing: 0.05em;
+    line-height: 1.8;
+    max-width: 500px;
+    margin: 0 auto 3rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 1rem 2.5rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold-light);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid rgba(201,169,110,0.4);
+    padding: 1rem 2.5rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--gold);
+    background: rgba(201,169,110,0.08);
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+
+  .scroll-indicator span {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0% { opacity: 1; transform: scaleY(1) translateY(0); }
+    100% { opacity: 0; transform: scaleY(0.3) translateY(20px); }
+  }
+
+  /* ── BRANDS STRIP ── */
+  .brands-strip {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--dark2);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .brands-scroll {
+    display: flex;
+    gap: 5rem;
+    animation: scrollBrands 20s linear infinite;
+    width: max-content;
+  }
+
+  .brand-item {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color 0.3s;
+  }
+
+  .brand-dot {
+    display: inline-block;
+    width: 4px; height: 4px;
+    background: var(--gold-dark);
+    border-radius: 50%;
+    margin-right: 5rem;
+    vertical-align: middle;
+  }
+
+  @keyframes scrollBrands {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 6rem 3rem; }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .section-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 1.5rem auto 0;
+  }
+
+  /* ── BRANDS SECTION ── */
+  .brands-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--border);
+  }
+
+  .brand-card {
+    background: var(--dark2);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .brand-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .brand-card:hover::before { opacity: 1; }
+  .brand-card:hover { background: var(--dark3); transform: translateY(-3px); }
+
+  .brand-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: grid;
+    place-items: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--gold);
+    background: linear-gradient(135deg, rgba(201,169,110,0.08), transparent);
+    transition: all 0.4s;
+  }
+
+  .brand-card:hover .brand-icon {
+    border-color: var(--gold);
+    background: rgba(201,169,110,0.12);
+  }
+
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .brand-origin {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .brand-count {
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    padding: 0.3rem 1rem;
+    border: 1px solid var(--border);
+  }
+
+  /* ── PRODUCTS ── */
+  #catalog { background: var(--dark); }
+
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 3.5rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--cream-dim);
+    padding: 0.5rem 1.5rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,169,110,0.05);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5px;
+    max-width: 1300px;
+    margin: 0 auto;
+    background: var(--border);
+  }
+
+  .product-card {
+    background: var(--dark2);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card:hover { background: var(--dark3); }
+
+  .product-image-wrap {
+    position: relative;
+    height: 280px;
+    background: linear-gradient(135deg, var(--dark3) 0%, var(--dark2) 100%);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  /* Bottle SVG illustrations */
+  .bottle-svg {
+    transition: transform 0.6s ease;
+  }
+
+  .product-card:hover .bottle-svg {
+    transform: translateY(-8px) scale(1.03);
+  }
+
+  .product-glow {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 40px;
+    background: var(--gold);
+    filter: blur(25px);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .product-card:hover .product-glow { opacity: 0.3; }
+
+  .product-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .product-wishlist {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    background: rgba(10,8,5,0.6);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    backdrop-filter: blur(4px);
+  }
+
+  .product-wishlist:hover { border-color: var(--gold); color: var(--gold); }
+
+  .product-info {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .product-brand {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  .product-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--gold-light);
+  }
+
+  .product-price sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    vertical-align: baseline;
+    margin-right: 0.2rem;
+  }
+
+  .add-to-cart {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.5rem 1.2rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .add-to-cart:hover {
+    background: var(--gold);
+    color: var(--black);
+  }
+
+  /* ── FEATURED / HIGHLIGHT ── */
+  .featured-section {
+    background: var(--black);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 500px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .featured-visual {
+    position: relative;
+    background: linear-gradient(135deg, var(--dark3) 0%, var(--dark2) 100%);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .featured-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(201,169,110,0.1) 0%, transparent 70%);
+  }
+
+  .featured-content {
+    padding: 5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .featured-content .section-eyebrow { text-align: left; }
+
+  .featured-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    line-height: 1.15;
+  }
+
+  .featured-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .featured-desc {
+    font-size: 0.9rem;
+    color: var(--cream-dim);
+    line-height: 1.9;
+    max-width: 400px;
+  }
+
+  .featured-tags {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.75rem;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--dark3);
+    border: 1px solid var(--gold);
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.5rem;
+    z-index: 9999;
+    transform: translateX(200%);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 300px;
+  }
+
+  .toast.show { transform: translateX(0); }
+
+  .toast-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--gold);
+    margin-bottom: 0.2rem;
+  }
+
+  .toast-msg {
+    font-size: 0.75rem;
+    color: var(--cream-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials {
+    background: var(--dark2);
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--border);
+  }
+
+  .review-card {
+    background: var(--dark);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .review-stars {
+    display: flex;
+    gap: 0.25rem;
+    color: var(--gold);
+    font-size: 0.8rem;
+  }
+
+  .review-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--cream-dim);
+    flex: 1;
+  }
+
+  .review-author {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+
+  .author-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .author-location {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── NEWSLETTER ── */
+  .newsletter {
+    background: var(--black);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .newsletter::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(201,169,110,0.05) 0%, transparent 70%);
+  }
+
+  .newsletter-content {
+    position: relative;
+    z-index: 1;
+    max-width: 550px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .newsletter-input-wrap {
+    display: flex;
+    width: 100%;
+    border: 1px solid rgba(201,169,110,0.3);
+  }
+
+  .newsletter-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 1rem 1.5rem;
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+  }
+
+  .newsletter-input::placeholder { color: var(--text-muted); }
+
+  .newsletter-btn {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 1rem 2rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.3s;
+  }
+
+  .newsletter-btn:hover { background: var(--gold-light); }
+
+  /* ── FOOTER ── */ 
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--border);
+    padding: 4rem 3rem 2rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto 3rem;
+  }
+
+  .footer-brand .nav-logo {
+    display: block;
+    margin-bottom: 1.2rem;
+  }
+
+  .footer-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 280px;
+  }
+
+  .footer-col-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    text-decoration: none;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--cream-dim); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-copy {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-copy span { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  .animate-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .animate-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,8,5,0.9);
+    z-index: 9998;
+    display: none;
+    place-items: center;
+    padding: 2rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .modal-overlay.open { display: grid; }
+
+  .modal {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    max-width: 700px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .modal-image {
+    background: linear-gradient(135deg, var(--dark3), var(--dark));
+    display: grid;
+    place-items: center;
+    min-height: 350px;
+    position: relative;
+  }
+
+  .modal-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(201,169,110,0.12) 0%, transparent 70%);
+  }
+
+  .modal-body {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(10,8,5,0.7);
+    border: 1px solid var(--border);
+    color: var(--cream-dim);
+    width: 32px; height: 32px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+
+  .modal-close:hover { border-color: var(--gold); color: var(--gold); }
+
+  .modal-brand {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .modal-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.1;
+  }
+
+  .modal-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--gold-light);
+  }
+
+  .modal-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-note-row {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .note-label {
+    color: var(--text-muted);
+    min-width: 80px;
+    letter-spacing: 0.1em;
+  }
+
+  .note-value { color: var(--cream-dim); }
+
+  .modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+  }
+
+  .modal-qty {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .qty-btn {
+    background: transparent;
+    border: none;
+    color: var(--gold);
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s;
+  }
+
+  .qty-btn:hover { background: rgba(201,169,110,0.1); }
+  .qty-num {
+    min-width: 36px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--cream);
+    font-weight: 400;
+  }
+
+  /* ── ADMIN LOGIN MODAL ── */
+  .admin-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,8,5,0.92);
+    z-index: 10000;
+    display: none;
+    place-items: center;
+    backdrop-filter: blur(10px);
+  }
+  .admin-overlay.open { display: grid; }
+
+  .login-box {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 420px;
+    padding: 3rem;
+    position: relative;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .login-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .login-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--gold); letter-spacing: 0.3em; text-align: center; margin-bottom: 0.4rem; }
+  .login-sub { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-muted); text-align: center; margin-bottom: 2.5rem; }
+  .login-field { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem; }
+  .login-field label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+  .login-field input { background: var(--dark3); border: 1px solid var(--border); color: var(--cream); padding: 0.85rem 1rem; font-family: 'Outfit', sans-serif; font-size: 0.85rem; outline: none; transition: border-color 0.3s; width: 100%; }
+  .login-field input:focus { border-color: var(--gold); }
+  .login-err { font-size: 0.75rem; color: #e05050; text-align: center; min-height: 1.2rem; margin-bottom: 0.5rem; }
+  .login-btn { width: 100%; background: var(--gold); color: var(--black); border: none; padding: 1rem; font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; }
+  .login-btn:hover { background: var(--gold-light); }
+  .login-close { position: absolute; top: 1rem; right: 1rem; background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: 28px; height: 28px; display: grid; place-items: center; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+  .login-close:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── ADMIN PANEL ── */
+  .admin-panel { position: fixed; inset: 0; background: var(--black); z-index: 9990; display: none; flex-direction: column; overflow: hidden; }
+  .admin-panel.open { display: flex; }
+  .admin-topbar { background: var(--dark2); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .admin-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); letter-spacing: 0.2em; }
+  .admin-topbar-right { display: flex; align-items: center; gap: 1rem; }
+  .admin-body { display: flex; flex: 1; overflow: hidden; }
+  .admin-sidebar { width: 220px; background: var(--dark2); border-right: 1px solid var(--border); padding: 2rem 0; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+  .sidebar-item { padding: 0.8rem 1.5rem; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; border-left: 2px solid transparent; }
+  .sidebar-item:hover { color: var(--cream-dim); background: rgba(201,169,110,0.04); }
+  .sidebar-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(201,169,110,0.06); }
+  .admin-content { flex: 1; overflow-y: auto; padding: 2rem; }
+
+  .admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: var(--dark2); border: 1px solid var(--border); padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .stat-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+  .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--gold); font-weight: 300; }
+  .stat-sub { font-size: 0.7rem; color: var(--text-muted); }
+
+  .admin-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--cream); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .admin-table th { background: var(--dark3); color: var(--text-muted); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-weight: 400; }
+  .admin-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); color: var(--cream-dim); vertical-align: middle; }
+  .admin-table tr:hover td { background: rgba(201,169,110,0.03); }
+  .admin-table img.tbl-img { width: 44px; height: 44px; object-fit: contain; background: var(--dark3); border: 1px solid var(--border); }
+  .tbl-brand-badge { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--black); background: var(--gold); padding: 0.2rem 0.5rem; }
+  .tbl-action { background: transparent; border: 1px solid var(--border); color: var(--cream-dim); padding: 0.35rem 0.75rem; font-size: 0.65rem; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
+  .tbl-action:hover { border-color: var(--gold); color: var(--gold); }
+  .tbl-action.danger:hover { border-color: #e05050; color: #e05050; }
+
+  .admin-form { background: var(--dark2); border: 1px solid var(--border); padding: 2rem; max-width: 700px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+  .form-field input, .form-field select, .form-field textarea { background: var(--dark3); border: 1px solid var(--border); color: var(--cream); padding: 0.75rem 1rem; font-family: 'Outfit', sans-serif; font-size: 0.82rem; outline: none; transition: border-color 0.3s; width: 100%; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--gold); }
+  .form-field select option { background: var(--dark3); }
+  .form-field textarea { resize: vertical; min-height: 80px; }
+  .form-actions { display: flex; gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .img-preview { width: 80px; height: 80px; object-fit: contain; background: var(--dark3); border: 1px solid var(--border); display: none; }
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .brands-grid { grid-template-columns: repeat(2, 1fr); }
+    .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .featured-section { grid-template-columns: 1fr; }
+    .featured-visual { min-height: 280px; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .footer-brand { grid-column: 1 / -1; }
+    .modal { grid-template-columns: 1fr; }
+    .modal-image { min-height: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Scent<span>oria</span></div>
+  <ul class="nav-links">
+    <li><a href="#brands">Brands</a></li>
+    <li><a href="#catalog">Catalog</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <div class="nav-cart" onclick="showToast('Keranjang', 'Fitur keranjang aktif')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span>Keranjang</span>
+      <div class="cart-badge" id="cartCount">0</div>
+    </div>
+    <div id="adminNavBtn" class="nav-cart" onclick="openLoginModal()" style="border:1px solid var(--border); padding:0.4rem 1rem;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span id="adminNavLabel">Admin</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="hero-line hero-line-1"></div>
+  <div class="hero-line hero-line-2"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">✦ Luxury Fragrance Marketplace ✦</div>
+    <h1 class="hero-title">
+      Temukan Aroma<br>
+      <em>Jiwa Anda</em>
+    </h1>
+    <p class="hero-subtitle">
+      Koleksi parfum eksklusif dari brand terpilih dunia & lokal. 
+      Setiap botol menyimpan cerita, setiap semprotan menciptakan memori.
+    </p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">
+        <span>Jelajahi Koleksi</span>
+      </button>
+      <button class="btn-outline" onclick="document.getElementById('brands').scrollIntoView({behavior:'smooth'})">Lihat Brand</button>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- BRANDS MARQUEE -->
+<div class="brands-strip">
+  <div class="brands-scroll">
+    <span class="brand-item">Mykonos</span><span class="brand-dot"></span>
+    <span class="brand-item">Afnan</span><span class="brand-dot"></span>
+    <span class="brand-item">Velixir</span><span class="brand-dot"></span>
+    <span class="brand-item">HMNS</span><span class="brand-dot"></span>
+    <span class="brand-item">Mykonos</span><span class="brand-dot"></span>
+    <span class="brand-item">Afnan</span><span class="brand-dot"></span>
+    <span class="brand-item">Velixir</span><span class="brand-dot"></span>
+    <span class="brand-item">HMNS</span><span class="brand-dot"></span>
+    <span class="brand-item">Mykonos</span><span class="brand-dot"></span>
+    <span class="brand-item">Afnan</span><span class="brand-dot"></span>
+    <span class="brand-item">Velixir</span><span class="brand-dot"></span>
+    <span class="brand-item">HMNS</span><span class="brand-dot"></span>
+    
+  </div>
+</div>
+
+<!-- BRANDS SECTION -->
+<section id="brands">
+  <div class="section-header animate-in">
+    <div class="section-eyebrow">✦ Mitra Brand Kami ✦</div>
+    <h2 class="section-title">Brand <em>Pilihan</em></h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="brands-grid animate-in">
+    <div class="brand-card" onclick="filterByBrand('mykonos')">
+      <img src="C:\Users\Rayyan Farizky S\Downloads\webmarketparfum\ScentoriaWebsite/MYKONOS.jpg" alt="Deskripsi gambar" width="120" height="120"  />
+      <div class="brand-name">Mykonos</div>
+      <div class="brand-origin">INDONESIA</div>
+      <div class="brand-count">8 Produk</div>
+    </div>
+    <div class="brand-card" onclick="filterByBrand('afnan')">
+        <img src="C:\Users\Rayyan Farizky S\Downloads\webmarketparfum\AFNAN.jpg" alt="Deskripsi gambar" width="120" height="120"  />
+      <div class="brand-name">Afnan</div>
+      <div class="brand-origin">🇦🇪 UAE</div>
+      <div class="brand-count">12 Produk</div>
+    </div>
+    <div class="brand-card" onclick="filterByBrand('velixir')">
+     <img src="C:\Users\Rayyan Farizky S\Downloads\webmarketparfum\VELIXIR.jpg" alt="Deskripsi gambar" width="120" height="120"  />
+      <div class="brand-name">Velixir</div>
+      <div class="brand-origin">🇮🇩 Indonesia</div>
+      <div class="brand-count">6 Produk</div>
+    </div>
+    <div class="brand-card" onclick="filterByBrand('hmns')">
+    <img src="C:\Users\Rayyan Farizky S\Downloads\webmarketparfum\HMNS.jpg" alt="Deskripsi gambar" width="120" height="120"  />
+      <div class="brand-name">HMNS</div>
+      <div class="brand-origin">🇮🇩 Indonesia</div>
+      <div class="brand-count">10 Produk</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<div class="featured-section animate-in">
+  <div class="featured-visual">
+  <img src="C:\Users\Rayyan Farizky S\Downloads\webmarketparfum\ScentoriaWebsite\SUPREMACY100ML.png" style="height:500px; object-fit:contain;">
+  </div>
+  <div class="featured-content">
+    <div class="section-eyebrow">✦ Produk Unggulan ✦</div>
+    <h2 class="featured-title">Afnan<br><em>Supremacy</em><br>Collection</h2>
+    <p class="featured-desc">
+      Diracik dari bahan-bahan premium Timur Tengah, koleksi Supremacy dari Afnan memancarkan kemewahan yang tak tertandingi. Aroma yang tahan lama dan proyeksi yang kuat menjadikannya pilihan para pecinta parfum sejati.
+    </p>
+    <div class="featured-tags">
+      <span class="tag">Oud</span>
+      <span class="tag">Amber</span>
+      <span class="tag">Musk</span>
+      <span class="tag">100ml EDP</span>
+    </div>
+    <button class="btn-primary" style="align-self: flex-start; margin-top: 0.5rem;" onclick="openModal(products[4])">
+      <span>Lihat Detail</span>
+    </button>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<section id="catalog">
+  <div class="section-header animate-in">
+    <div class="section-eyebrow">✦ Koleksi Lengkap ✦</div>
+    <h2 class="section-title">Temukan <em>Parfum</em> Anda</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="filter-bar animate-in" id="filterBar">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">Semua</button>
+    <button class="filter-btn" onclick="filterProducts('mykonos', this)">Mykonos</button>
+    <button class="filter-btn" onclick="filterProducts('afnan', this)">Afnan</button>
+    <button class="filter-btn" onclick="filterProducts('velixir', this)">Velixir</button>
+    <button class="filter-btn" onclick="filterProducts('hmns', this)">HMNS</button>
+    <button class="filter-btn" onclick="filterProducts('pria', this)">Pria</button>
+    <button class="filter-btn" onclick="filterProducts('wanita', this)">Wanita</button>
+    <button class="filter-btn" onclick="filterProducts('unisex', this)">Unisex</button>
+    <button class="filter-btn" onclick="filterProducts('50ml', this)">50ml</button>
+    <button class="filter-btn" onclick="filterProducts('100ml', this)">100ml</button>
+    
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <!-- Rendered by JS -->
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-header animate-in">
+    <div class="section-eyebrow">✦ Ulasan Pelanggan ✦</div>
+    <h2 class="section-title">Kata <em>Mereka</em></h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="reviews-grid animate-in">
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Velixir Apollo benar-benar mengubah cara aku memandang parfum lokal. Proyeksinya luar biasa, tahan sampai 12 jam. Highly recommended!"</p>
+      <div class="review-author">
+        <span class="author-name">Raka Santoso</span>
+        <span class="author-location">Surabaya, Jawa Timur</span>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Mykonos Aegean selalu jadi andalan aku setiap hari. Aromanya segar, elegan, pas banget buat kerja maupun acara formal. Packing juga sangat premium."</p>
+      <div class="review-author">
+        <span class="author-name">Dinda Maharani</span>
+        <span class="author-location">Jakarta, DKI Jakarta</span>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★☆</div>
+      <p class="review-text">"HMNS Farhampton jadi koleksi favorit. Scentoria pengirimannya cepat, dikemas rapih dan aman. Pasti balik lagi beli yang lain!"</p>
+      <div class="review-author">
+        <span class="author-name">Bimo Prakoso</span>
+        <span class="author-location">Bandung, Jawa Barat</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <div class="newsletter-content animate-in">
+    <div class="section-eyebrow">✦ Stay Informed ✦</div>
+    <h2 class="section-title">Dapatkan <em>Penawaran</em> Eksklusif</h2>
+    <p style="font-size:0.85rem; color:var(--text-muted); text-align:center; line-height:1.8;">
+      Daftarkan email Anda dan jadilah yang pertama tahu koleksi terbaru, promo spesial & tips memilih aroma.
+    </p>
+    <div class="newsletter-input-wrap">
+      <input type="email" class="newsletter-input" placeholder="email@anda.com">
+      <button class="newsletter-btn" onclick="showToast('Berhasil!', 'Terima kasih telah mendaftar newsletter kami.')">Daftar</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="nav-logo">Scent<span>oria</span></span>
+      <p class="footer-desc">Marketplace parfum premium yang menghadirkan koleksi autentik dari brand ternama dunia dan lokal terbaik. Aroma terbaik untuk jiwa terbaik.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigasi</div>
+      <ul class="footer-links">
+        <li><a href="#brands">Brand</a></li>
+        <li><a href="#catalog">Katalog</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Best Seller</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Bantuan</div>
+      <ul class="footer-links">
+        <li><a href="#">Cara Pemesanan</a></li>
+        <li><a href="#">Pengiriman</a></li>
+        <li><a href="#">Return & Refund</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Kontak</div>
+      <ul class="footer-links">
+        <li><a href="#">WhatsApp</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Email Kami</a></li>
+        <li><a href="#">Tokopedia</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 <span>Scentoria</span>. All rights reserved.</p>
+    <p class="footer-copy">Made with ✦ for fragrance lovers</p>
+  </div>
+</footer>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="admin-overlay" id="loginOverlay">
+  <div class="login-box">
+    <button class="login-close" onclick="closeLoginModal()">x</button>
+    <div class="login-logo">Scent<span style="font-style:italic">oria</span></div>
+    <div class="login-sub">Admin Dashboard</div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="admin" autocomplete="off">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="password" onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" onclick="doLogin()">Masuk ke Dashboard</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-topbar">
+    <div class="admin-title">Scentoria Admin</div>
+    <div class="admin-topbar-right">
+      <span style="font-size:0.7rem;color:var(--text-muted);letter-spacing:0.1em;">Halo, <span style="color:var(--gold)">Admin</span></span>
+      <button class="tbl-action" onclick="goBackToSite()">Kembali ke Situs</button>
+      <button class="tbl-action danger" onclick="adminLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-sidebar">
+      <div class="sidebar-item active" onclick="switchTab('dashboard',this)">Dashboard</div>
+      <div class="sidebar-item" onclick="switchTab('produk',this)">Kelola Produk</div>
+      <div class="sidebar-item" onclick="switchTab('tambah',this)">Tambah Produk</div>
+    </div>
+    <div class="admin-content">
+
+      <!-- DASHBOARD TAB -->
+      <div class="tab-section active" id="tab-dashboard">
+        <div class="admin-section-title">Dashboard Overview</div>
+        <div class="admin-stats">
+          <div class="stat-card">
+            <div class="stat-label">Total Produk</div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-sub">dalam katalog</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Brand Aktif</div>
+            <div class="stat-value">4</div>
+            <div class="stat-sub">Mykonos, Afnan, Velixir, HMNS</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Produk Pria</div>
+            <div class="stat-value" id="statPria">0</div>
+            <div class="stat-sub">dari katalog</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Produk Wanita</div>
+            <div class="stat-value" id="statWanita">0</div>
+            <div class="stat-sub">dari katalog</div>
+          </div>
+        </div>
+        <div style="background:var(--dark2);border:1px solid var(--border);padding:1.5rem;max-width:500px;">
+          <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem;">Produk per Brand</div>
+          <div id="brandBreakdown"></div>
+        </div>
+      </div>
+
+      <!-- PRODUK TAB -->
+      <div class="tab-section" id="tab-produk">
+        <div class="admin-section-title">
+          <span>Kelola Produk</span>
+          <button class="tbl-action" onclick="switchTab('tambah',document.querySelectorAll('.sidebar-item')[2])">+ Tambah Produk</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Foto</th><th>Nama Produk</th><th>Brand</th><th>Gender</th><th>Ukuran</th><th>Harga</th><th>Badge</th><th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAMBAH/EDIT TAB -->
+      <div class="tab-section" id="tab-tambah">
+        <div class="admin-section-title"><span id="formTitle">Tambah Produk Baru</span></div>
+        <div class="admin-form">
+          <input type="hidden" id="editId" value="">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Nama Produk *</label>
+              <input type="text" id="fName" placeholder="cth: Aegean Blue">
+            </div>
+            <div class="form-field">
+              <label>Brand *</label>
+              <select id="fBrand">
+                <option value="mykonos">Mykonos</option>
+                <option value="afnan">Afnan</option>
+                <option value="velixir">Velixir</option>
+                <option value="hmns">HMNS</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Gender *</label>
+              <select id="fGender">
+                <option value="pria">Pria</option>
+                <option value="wanita">Wanita</option>
+                <option value="unisex">Unisex</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Ukuran</label>
+              <select id="fSize">
+                <option value="30ml EDP">30ml EDP</option>
+                <option value="50ml EDP">50ml EDP</option>
+                <option value="100ml EDP">100ml EDP</option>
+                <option value="50ml EDT">50ml EDT</option>
+                <option value="100ml EDT">100ml EDT</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Harga (Rp) *</label>
+              <input type="number" id="fPrice" placeholder="cth: 250000">
+            </div>
+            <div class="form-field">
+              <label>Badge (opsional)</label>
+              <input type="text" id="fBadge" placeholder="cth: Best Seller">
+            </div>
+            <div class="form-field full">
+              <label>Path / Nama File Gambar *</label>
+              <input type="text" id="fImg" placeholder="cth: webmarketparfum/BOTOL.png" oninput="previewImg(this.value)">
+              <img id="imgPreview" class="img-preview" src="" alt="preview">
+            </div>
+            <div class="form-field">
+              <label>Top Notes</label>
+              <input type="text" id="fTop" placeholder="cth: Bergamot, Lemon">
+            </div>
+            <div class="form-field">
+              <label>Mid Notes</label>
+              <input type="text" id="fMid" placeholder="cth: Rose, Jasmine">
+            </div>
+            <div class="form-field">
+              <label>Base Notes</label>
+              <input type="text" id="fBase" placeholder="cth: Musk, Sandalwood">
+            </div>
+            <div class="form-field full">
+              <label>Deskripsi</label>
+              <textarea id="fDesc" placeholder="Deskripsi singkat parfum ini..."></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-primary" onclick="saveProduct()"><span id="saveBtnLabel">Simpan Produk</span></button>
+            <button class="btn-outline" onclick="resetForm()">Reset</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle">—</div>
+  <div class="toast-msg" id="toastMsg">—</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalCheck(event)">
+  <div class="modal" id="modal">
+    <div class="modal-image" id="modalImage">
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const products = [
+  // MYKONOS
+  {
+    id: 1, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "CALIFBLUE50ML.PNG" ,
+    name: 'California Blue', gender: 'unisex',
+    notes: { top: 'Bergamot, Sea Salt', mid: 'Jasmine, Driftwood', base: 'Musk, Ambergris' },
+    desc: 'Inspirasi laut Mediterania yang biru jernih.',
+    price: 180000, size: '50ml EDP', badge: null,
+    color: '#1a3a6e', accent: '#4a90d9',
+    svgPath: 'California Bluee'
+    
+  },
+  {
+    id: 2, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "CALIFOG50.PNG"  ,
+    imgStyle: "height:280px;" ,
+    name: 'California Signature', gender: 'male',
+    notes: { top: 'Mandarin Orange, Lemon', mid: 'Lychee, Rosemary, Cardamom, Lavender, Geranium, Aquatic Notes', base: 'Tonka Bean, Teak Wood, Vetiver' },
+    desc: 'Rasakan kemewahan dan keceriaan musim panas khas California dalam setiap semprotan Mykonos California Signature Extrait de Parfum. Parfum ini menghadirkan nuansa liburan pantai yang boujee, segar, sekaligus penuh gaya, dirancang untuk memberikan kesan sensual dan sophisticated.',
+    price: 180000, size: '50ml EDP', badge: 'BEST SELLER',
+    color: '#7a3a1a', accent: '#e87a3a',
+    svgPath: 'California Signature'
+  },
+  // AFNAN
+  {
+    id: 3, brand: 'afnan', brandLabel: 'Afnan',
+    img: 'SCESILVER.PNG' ,
+    name: 'Supremacy Silver', gender: 'pria',
+    notes: { top: 'Citrus, Lavender', mid: 'Cedar, Geranium', base: 'Musk, Amber' },
+    desc: 'Ketegasan maskulin dengan sentuhan Oriental.',
+    price: 345000, size: '100ml EDP', badge: null,
+    color: '#2a2a3a', accent: '#a0a0d0',
+    svgPath: 'supremacy'
+  },
+  {
+    id: 4, brand: 'afnan', brandLabel: 'Afnan',
+    img: '9PMRB.WEBP' ,
+    name: '9 PM REBEL', gender: 'unisex',
+    notes: { top: ' Mandarin, Pineapple and Granny Smith', mid: 'Cedarwood, Oakmoss and Vanilla', base: 'Caramel, Dry woods, Ambergris and Musk' },
+    desc: 'Nikmati pesona memikat 9PM Rebel, sebuah parfum yang menambahkan dimensi baru pada koleksi ikonik 9 Collection. Kreasi yang elegan ini memancarkan keanggunan yang halus melalui notes buah-buahan premium, kayu, dan amber, menawarkan pengalaman aroma yang muda dan sophisticated.',
+    price: 549000, size: '100ml EDP', badge: null,
+    color: '#1a1212', accent: '#8B4A4A',
+    svgPath: 'noir'
+  },
+  {
+    id: 5, brand: 'afnan', brandLabel: 'Afnan',
+    img: 'sce.WEBP' ,
+    name: 'Afnan Supremacy Collector Edition ', gender: 'pria',
+    notes: { top: 'Pineapple, Bergamot, Apple and White Floral', mid: 'Orange Blossom, Birch and Amber', base: 'Oak Moss, Musk and Ambergris' },
+    desc: 'Supremacy Collectors Edition adalah parfum maskulin yang memikat, yang menghormati warisan koleksi Supremacy yang dicintai dari Afnan. Aroma yang elegan ini menggabungkan pesona klasik dari sebuah klasik abadi dengan sentuhan segar bunga putih dan aroma amber, menciptakan pengalaman aroma yang sophisticated dan menyegarkan, sempurna untuk acara-acara istimewa.',
+    price: 639000, size: '100ml EDP', badge: 'populer',
+    color: '#3a1a2a', accent: '#d04a8a',
+    svgPath: 'ornament'
+  },
+  // VELIXIR
+  {
+    id: 6, brand: 'velixir', brandLabel: 'Velixir',
+    img: 'apolo.PNG' ,
+     imgStyle: "height:320px;" ,
+    name: 'Apollo', gender: 'unisex',
+    notes: { top: 'Green Apple, Ginger, Bergamot', mid: 'Clary Sage, Juniper Berries', base: 'Amberwood, Tonka Bean, Cedar, Vetiver' },
+    desc: 'Kekuatan dewa matahari dalam sebotol parfum.',
+    price: 445000, size: '100ml EDP', badge: 'Lokal Pride',
+    color: '#3a2a12', accent: '#d4a034',
+    svgPath: 'apollo'
+  },
+  {
+    id: 7, brand: 'velixir', brandLabel: 'Velixir',
+    img: 'icarus.WEBP' ,
+    name: 'Icarus', gender: 'unisex',
+    notes: { top: 'Neroli, Green Tea', mid: 'Iris, White Musk', base: 'Cedarwood, Ambrette' },
+    desc: 'Melayang bebas bersama aroma yang ringan dan segar.',
+    price: 445000, size: '100ml EDP', badge: null,
+    color: '#12203a', accent: '#4a8ac4',
+    svgPath: 'icarus'
+  },
+  {
+    id: 8, brand: 'velixir', brandLabel: 'Velixir',
+    img: 'narcisus.PNG' ,
+    name: 'Narcissus', gender: 'wanita',
+    notes: { top: 'Pink Pepper, Raspberry', mid: 'Narcissus, Jasmine', base: 'White Musk, Cashmeran' },
+    desc: 'Kelembutan bunga Narcissus dalam botol yang anggun.',
+    price: 445000, size: '100ml EDP', badge: 'New',
+    color: '#2a1a3a', accent: '#9a4ac4',
+    svgPath: 'narcissus'
+  },
+  // HMNS
+  {
+    id: 9, brand: 'hmns', brandLabel: 'HMNS',
+    img: 'FHP.PNG' ,
+    name: 'Farhampton', gender: 'unisex',
+    notes: { top: 'Bergamot, Apple', mid: 'Sea Breeze, Driftwood', base: 'White Musk, Amber' },
+    desc: 'Kesegaran pantai yang membawa nostalgia musim panas.',
+    price: 229000, size: '100ml EDP', badge: 'Best Seller',
+    color: '#12302a', accent: '#3ac4a0',
+    svgPath: 'farhampton'
+  },
+  {
+    id: 10, brand: 'hmns', brandLabel: 'HMNS',
+    img: 'addict.PNG' ,
+    name: 'Addict', gender: 'pria',
+    notes: { top: 'Black Pepper, Mandarin', mid: 'Vetiver, Cedarwood', base: 'Tonka, Leather' },
+    desc: 'Hitam yang tegas, maskulin yang tak terbantahkan.',
+    price: 249000, size: '100ml EDP', badge: 'Populer',
+    color: '#0a0a0a', accent: '#606060',
+    svgPath: 'mattblack'
+  },
+  {
+    id: 11, brand: 'hmns', brandLabel: 'HMNS',
+    img: 'eos.PNG' ,
+    name: 'Eos', gender: 'wanita',
+    notes: { top: 'Peach, Apricot', mid: 'Rose, Peony', base: 'Musk, Sandalwood' },
+    desc: 'Dewi fajar hadir dalam aroma yang memukau.',
+    price: 229000, size: '100ml EDP', badge: null,
+    color: '#3a2012', accent: '#e8a060',
+    svgPath: 'eos'
+  },
+  {
+    id: 12, brand: 'hmns', brandLabel: 'HMNS',
+    img: 'orgsm.PNG' ,
+    name: 'Dark Matter', gender: 'unisex',
+    notes: { top: 'Cardamom, Saffron', mid: 'Oud, Incense', base: 'Amber, Oakmoss' },
+    desc: 'Misteri galaksi dalam kedalaman aroma gelap.',
+    price: 279000, size: '100ml EDP', badge: 'New',
+    color: '#12082a', accent: '#7040c8',
+    svgPath: 'darkmatter'
+  } ,
+    {
+    id: 13, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "GLITCH50ML.PNG"  ,
+    name: 'California Signature', gender: 'male',
+    notes: { top: 'Mandarin Orange, Lemon', mid: 'Lychee, Rosemary, Cardamom, Lavender, Geranium, Aquatic Notes', base: 'Tonka Bean, Teak Wood, Vetiver' },
+    desc: 'Rasakan kemewahan dan keceriaan musim panas khas California dalam setiap semprotan Mykonos California Signature Extrait de Parfum. Parfum ini menghadirkan nuansa liburan pantai yang boujee, segar, sekaligus penuh gaya, dirancang untuk memberikan kesan sensual dan sophisticated.',
+    price: 180000, size: '50ml EDP', badge: 'BEST SELLER',
+    color: '#7a3a1a', accent: '#e87a3a',
+    svgPath: 'California Signature'
+  },
+    {
+    id: 14, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "Conquer100.PNG"  ,
+    name: 'California Signature', gender: 'male',
+    notes: { top: 'Mandarin Orange, Lemon', mid: 'Lychee, Rosemary, Cardamom, Lavender, Geranium, Aquatic Notes', base: 'Tonka Bean, Teak Wood, Vetiver' },
+    desc: 'Rasakan kemewahan dan keceriaan musim panas khas California dalam setiap semprotan Mykonos California Signature Extrait de Parfum. Parfum ini menghadirkan nuansa liburan pantai yang boujee, segar, sekaligus penuh gaya, dirancang untuk memberikan kesan sensual dan sophisticated.',
+    price: 180000, size: '100ml EDP', badge: 'BEST SELLER',
+    color: '#7a3a1a', accent: '#e87a3a',
+    svgPath: 'California Signature'
+  },
+  {
+    id: 14, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "monro100.PNG"  ,
+    name: 'California Signature', gender: 'male',
+    notes: { top: 'Mandarin Orange, Lemon', mid: 'Lychee, Rosemary, Cardamom, Lavender, Geranium, Aquatic Notes', base: 'Tonka Bean, Teak Wood, Vetiver' },
+    desc: 'Rasakan kemewahan dan keceriaan musim panas khas California dalam setiap semprotan Mykonos California Signature Extrait de Parfum. Parfum ini menghadirkan nuansa liburan pantai yang boujee, segar, sekaligus penuh gaya, dirancang untuk memberikan kesan sensual dan sophisticated.',
+    price: 180000, size: '100ml EDP', badge: 'BEST SELLER',
+    color: '#7a3a1a', accent: '#e87a3a',
+    svgPath: 'California Signature'
+  },
+ {
+    id: 14, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "myego50.PNG"  ,
+    name: 'California Signature', gender: 'male',
+    notes: { top: 'Mandarin Orange, Lemon', mid: 'Lychee, Rosemary, Cardamom, Lavender, Geranium, Aquatic Notes', base: 'Tonka Bean, Teak Wood, Vetiver' },
+    desc: 'Rasakan kemewahan dan keceriaan musim panas khas California dalam setiap semprotan Mykonos California Signature Extrait de Parfum. Parfum ini menghadirkan nuansa liburan pantai yang boujee, segar, sekaligus penuh gaya, dirancang untuk memberikan kesan sensual dan sophisticated.',
+    price: 180000, size: '100ml EDP', badge: 'BEST SELLER',
+    color: '#7a3a1a', accent: '#e87a3a',
+    svgPath: 'California Signature'
+  },
+ {
+    id: 14, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "penthouse100.PNG"  ,
+    name: 'California Signature', gender: 'male',
+    notes: { top: 'Mandarin Orange, Lemon', mid: 'Lychee, Rosemary, Cardamom, Lavender, Geranium, Aquatic Notes', base: 'Tonka Bean, Teak Wood, Vetiver' },
+    desc: 'Rasakan kemewahan dan keceriaan musim panas khas California dalam setiap semprotan Mykonos California Signature Extrait de Parfum. Parfum ini menghadirkan nuansa liburan pantai yang boujee, segar, sekaligus penuh gaya, dirancang untuk memberikan kesan sensual dan sophisticated.',
+    price: 180000, size: '100ml EDP', badge: 'BEST SELLER',
+    color: '#7a3a1a', accent: '#e87a3a',
+    svgPath: 'California Signature'
+  },
+   {
+    id: 14, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "inception100.PNG"  ,
+    name: 'California Signature', gender: 'male',
+    notes: { top: 'Mandarin Orange, Lemon', mid: 'Lychee, Rosemary, Cardamom, Lavender, Geranium, Aquatic Notes', base: 'Tonka Bean, Teak Wood, Vetiver' },
+    desc: 'Rasakan kemewahan dan keceriaan musim panas khas California dalam setiap semprotan Mykonos California Signature Extrait de Parfum. Parfum ini menghadirkan nuansa liburan pantai yang boujee, segar, sekaligus penuh gaya, dirancang untuk memberikan kesan sensual dan sophisticated.',
+    price: 180000, size: '100ml EDP', badge: 'BEST SELLER',
+    color: '#7a3a1a', accent: '#e87a3a',
+    svgPath: 'California Signature'
+  },
+   {
+    id: 14, brand: 'mykonos', brandLabel: 'Mykonos',
+    img: "reflection50.PNG"  ,
+    name: 'California Signature', gender: 'male',
+    notes: { top: 'Mandarin Orange, Lemon', mid: 'Lychee, Rosemary, Cardamom, Lavender, Geranium, Aquatic Notes', base: 'Tonka Bean, Teak Wood, Vetiver' },
+    desc: 'Rasakan kemewahan dan keceriaan musim panas khas California dalam setiap semprotan Mykonos California Signature Extrait de Parfum. Parfum ini menghadirkan nuansa liburan pantai yang boujee, segar, sekaligus penuh gaya, dirancang untuk memberikan kesan sensual dan sophisticated.',
+    price: 180000, size: '100ml EDP', badge: 'BEST SELLER',
+    color: '#7a3a1a', accent: '#e87a3a',
+    svgPath: 'California Signature'
+  },
+];
+
+let cartCount = 0;
+let activeFilter = 'all';
+
+function createBottleSVG(p) {
+  const h = p.imgStyle || "height:200px;";
+  return `<img src="${p.img}" alt="${p.name}" style="${h} object-fit:contain; display:block; position:relative; z-index:2;">`;
+}
+
+function formatPrice(p) {
+  return 'Rp ' + p.toLocaleString('id-ID');
+}
+
+function renderProducts(list) {
+  const grid = document.getElementById('productsGrid');
+  if (list.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:4rem; color:var(--text-muted); font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-style:italic;">Tidak ada produk ditemukan</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(p => `
+    <div class="product-card animate-in" style="animation-delay:${Math.random()*0.2}s">
+      <div class="product-image-wrap">
+        ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
+        <div class="product-wishlist" onclick="toggleWish(this)" title="Wishlist">♡</div>
+        ${createBottleSVG(p)}
+        <div class="product-glow"></div>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">${p.brandLabel} · ${p.gender}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-note">${p.notes.top} — ${p.notes.mid}</div>
+        <div class="product-footer">
+          <div class="product-price"><sub>mulai</sub>${formatPrice(p.price)}</div>
+          <button class="add-to-cart" onclick="addToCart('${p.name}')">+ Keranjang</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Click for modal
+  document.querySelectorAll('.product-card').forEach((card, i) => {
+    card.addEventListener('click', e => {
+      if (e.target.classList.contains('add-to-cart') || e.target.classList.contains('product-wishlist')) return;
+      openModal(list[i]);
+    });
+  });
+
+  observeAnimations();
+}
+
+function filterProducts(type, btn) {
+  activeFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if (type === 'all') filtered = products;
+  else if (['mykonos','afnan','velixir','hmns'].includes(type)) filtered = products.filter(p => p.brand === type);
+  else if (type === '50ml') filtered = products.filter(p => p.size.includes('50ml'));
+  else if (type === '100ml') filtered = products.filter(p => p.size.includes('100ml'));
+  else filtered = products.filter(p => p.gender === type);
+
+  renderProducts(filtered);
+}
+
+function filterByBrand(brand) {
+  document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => {
+    const btn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent.toLowerCase() === brand);
+    if (btn) filterProducts(brand, btn);
+  }, 600);
+}
+
+function addToCart(name) {
+  cartCount++;
+  document.getElementById('cartCount').textContent = cartCount;
+  showToast('Ditambahkan!', name + ' masuk ke keranjang.');
+}
+
+function toggleWish(el) {
+  el.textContent = el.textContent === '♡' ? '♥' : '♡';
+  el.style.color = el.textContent === '♥' ? 'var(--gold)' : '';
+  showToast(el.textContent === '♥' ? 'Disimpan ✦' : 'Dihapus', 'Daftar wishlist diperbarui.');
+}
+
+let toastTimer;
+function showToast(title, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function openModal(p) {
+  const img = document.getElementById('modalImage');
+  const body = document.getElementById('modalBody');
+
+  img.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div style="position:relative;z-index:1;">${createBottleSVG({...p, id: 'modal'})}</div>
+    <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:160px;height:50px;background:${p.accent};filter:blur(30px);opacity:0.25;"></div>
+  `;
+
+  body.innerHTML = `
+    <div class="modal-brand">${p.brandLabel} · ${p.size}</div>
+    <div class="modal-name">${p.name}</div>
+    <div class="modal-price">${formatPrice(p.price)}</div>
+    <div class="modal-notes">
+      <div class="modal-note-row"><span class="note-label">Top Notes</span><span class="note-value">${p.notes.top}</span></div>
+      <div class="modal-note-row"><span class="note-label">Mid Notes</span><span class="note-value">${p.notes.mid}</span></div>
+      <div class="modal-note-row"><span class="note-label">Base Notes</span><span class="note-value">${p.notes.base}</span></div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--cream-dim);line-height:1.8;">${p.desc}</p>
+    <div class="modal-actions">
+      <div class="modal-qty">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-num" id="modalQty">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <button class="add-to-cart" style="flex:1;padding:0.7rem;" onclick="addToCart('${p.name}'); closeModal();">+ Keranjang</button>
+    </div>
+  `;
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalCheck(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function changeQty(dir) {
+  const el = document.getElementById('modalQty');
+  const v = Math.max(1, parseInt(el.textContent) + dir);
+  el.textContent = v;
+}
+
+// Intersection Observer for animations
+function observeAnimations() {
+  const items = document.querySelectorAll('.animate-in:not(.visible)');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  items.forEach(i => obs.observe(i));
+}
+
+// Keyboard close modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeLoginModal(); }
+});
+
+// ── ADMIN AUTH ──
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'scentoria123';
+let isAdminLoggedIn = false;
+
+function openLoginModal() {
+  if (isAdminLoggedIn) { openAdminPanel(); return; }
+  document.getElementById('loginOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('loginUser').focus(), 100);
+}
+
+function closeLoginModal() {
+  document.getElementById('loginOverlay').classList.remove('open');
+  document.getElementById('loginErr').textContent = '';
+  document.getElementById('loginPass').value = '';
+}
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    isAdminLoggedIn = true;
+    closeLoginModal();
+    openAdminPanel();
+    document.getElementById('adminNavLabel').textContent = 'Dashboard';
+  } else {
+    document.getElementById('loginErr').textContent = 'Username atau password salah.';
+    document.getElementById('loginPass').value = '';
+  }
+}
+
+function adminLogout() {
+  isAdminLoggedIn = false;
+  document.getElementById('adminPanel').classList.remove('open');
+  document.getElementById('adminNavLabel').textContent = 'Admin';
+  showToast('Logout', 'Berhasil keluar dari admin.');
+}
+
+function goBackToSite() {
+  document.getElementById('adminPanel').classList.remove('open');
+}
+
+// ── ADMIN PANEL ──
+function openAdminPanel() {
+  document.getElementById('adminPanel').classList.add('open');
+  refreshAdminTable();
+  refreshDashboard();
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  if (name === 'produk') refreshAdminTable();
+  if (name === 'dashboard') refreshDashboard();
+  if (name === 'tambah' && !document.getElementById('editId').value) resetForm();
+}
+
+function refreshDashboard() {
+  document.getElementById('statTotal').textContent = products.length;
+  document.getElementById('statPria').textContent = products.filter(p => p.gender === 'pria').length;
+  document.getElementById('statWanita').textContent = products.filter(p => p.gender === 'wanita').length;
+  const brands = ['mykonos','afnan','velixir','hmns'];
+  const labels = { mykonos:'Mykonos', afnan:'Afnan', velixir:'Velixir', hmns:'HMNS' };
+  const el = document.getElementById('brandBreakdown');
+  el.innerHTML = brands.map(b => {
+    const count = products.filter(p => p.brand === b).length;
+    const pct = products.length ? Math.round(count / products.length * 100) : 0;
+    return '<div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:0.4rem;"><span style="color:var(--cream-dim)">' + labels[b] + '</span><span style="color:var(--gold)">' + count + ' produk</span></div><div style="height:4px;background:var(--dark3);"><div style="height:4px;background:var(--gold);width:' + pct + '%;"></div></div></div>';
+  }).join('');
+}
+
+function refreshAdminTable() {
+  const tbody = document.getElementById('adminTableBody');
+  tbody.innerHTML = products.map((p, i) =>
+    '<tr><td><img src="' + (p.img||'') + '" onerror="this.style.opacity=0.2" style="width:44px;height:44px;object-fit:contain;background:var(--dark3);border:1px solid var(--border);"></td>' +
+    '<td style="font-family:Cormorant Garamond,serif;font-size:1rem;color:var(--cream);">' + p.name + '</td>' +
+    '<td><span style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:0.2rem 0.5rem;">' + p.brandLabel + '</span></td>' +
+    '<td style="text-transform:capitalize;">' + p.gender + '</td>' +
+    '<td>' + p.size + '</td>' +
+    '<td style="color:var(--gold-light);">' + formatPrice(p.price) + '</td>' +
+    '<td>' + (p.badge ? '<span style="font-size:0.65rem;color:var(--gold);border:1px solid var(--border);padding:0.15rem 0.5rem;">' + p.badge + '</span>' : '<span style="color:var(--text-muted);font-size:0.7rem;">—</span>') + '</td>' +
+    '<td style="display:flex;gap:0.5rem;"><button class="tbl-action" onclick="editProduct(' + i + ')">Edit</button><button class="tbl-action danger" onclick="deleteProduct(' + i + ')">Hapus</button></td></tr>'
+  ).join('');
+}
+
+function saveProduct() {
+  const name  = document.getElementById('fName').value.trim();
+  const img   = document.getElementById('fImg').value.trim();
+  const price = parseInt(document.getElementById('fPrice').value);
+  if (!name || !img || !price) { showToast('Error', 'Nama, gambar, dan harga wajib diisi.'); return; }
+  const brandVal = document.getElementById('fBrand').value;
+  const brandLabels = { mykonos:'Mykonos', afnan:'Afnan', velixir:'Velixir', hmns:'HMNS' };
+  const newProduct = {
+    id: Date.now(), brand: brandVal, brandLabel: brandLabels[brandVal], name, img,
+    gender: document.getElementById('fGender').value,
+    size: document.getElementById('fSize').value,
+    price, badge: document.getElementById('fBadge').value.trim() || null,
+    notes: { top: document.getElementById('fTop').value.trim()||'—', mid: document.getElementById('fMid').value.trim()||'—', base: document.getElementById('fBase').value.trim()||'—' },
+    desc: document.getElementById('fDesc').value.trim()||'',
+    color:'#1a1a1a', accent:'#C9A96E', svgPath:''
+  };
+  const editId = document.getElementById('editId').value;
+  if (editId) {
+    const idx = products.findIndex(p => String(p.id) === editId);
+    if (idx !== -1) products[idx] = { ...products[idx], ...newProduct, id: products[idx].id };
+    showToast('Berhasil!', '"' + name + '" berhasil diperbarui.');
+  } else {
+    products.push(newProduct);
+    showToast('Berhasil!', '"' + name + '" ditambahkan ke katalog.');
+  }
+  resetForm();
+  renderProducts(products);
+  refreshAdminTable();
+  refreshDashboard();
+  switchTab('produk', document.querySelectorAll('.sidebar-item')[1]);
+}
+
+function editProduct(i) {
+  const p = products[i];
+  document.getElementById('editId').value  = p.id;
+  document.getElementById('fName').value   = p.name;
+  document.getElementById('fBrand').value  = p.brand;
+  document.getElementById('fGender').value = p.gender;
+  document.getElementById('fSize').value   = p.size;
+  document.getElementById('fPrice').value  = p.price;
+  document.getElementById('fBadge').value  = p.badge || '';
+  document.getElementById('fImg').value    = p.img || '';
+  document.getElementById('fTop').value    = p.notes.top;
+  document.getElementById('fMid').value    = p.notes.mid;
+  document.getElementById('fBase').value   = p.notes.base;
+  document.getElementById('fDesc').value   = p.desc;
+  document.getElementById('formTitle').textContent   = 'Edit Produk';
+  document.getElementById('saveBtnLabel').textContent = 'Simpan Perubahan';
+  previewImg(p.img);
+  switchTab('tambah', document.querySelectorAll('.sidebar-item')[2]);
+}
+
+function deleteProduct(i) {
+  const name = products[i].name;
+  if (!confirm('Hapus "' + name + '" dari katalog?')) return;
+  products.splice(i, 1);
+  renderProducts(products);
+  refreshAdminTable();
+  refreshDashboard();
+  showToast('Dihapus', '"' + name + '" dihapus dari katalog.');
+}
+
+function resetForm() {
+  document.getElementById('editId').value = '';
+  ['fName','fImg','fPrice','fBadge','fTop','fMid','fBase','fDesc'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('fBrand').value  = 'mykonos';
+  document.getElementById('fGender').value = 'pria';
+  document.getElementById('fSize').value   = '100ml EDP';
+  document.getElementById('formTitle').textContent   = 'Tambah Produk Baru';
+  document.getElementById('saveBtnLabel').textContent = 'Simpan Produk';
+  const prev = document.getElementById('imgPreview');
+  prev.style.display = 'none'; prev.src = '';
+}
+
+function previewImg(src) {
+  const el = document.getElementById('imgPreview');
+  if (src) { el.src = src; el.style.display = 'block'; }
+  else { el.style.display = 'none'; el.src = ''; }
+}
+
+// Init
+renderProducts(products);
+observeAnimations();
+</script>
+</body>
+</html>
